@@ -18,7 +18,7 @@ FROM base
 
 # https://pkgs.alpinelinux.org/packages
 ARG PACKAGES="sudo bash wget curl git \
-    build-essential bc file \
+    build-essential file \
     dos2unix \
     python3 python3-pip \
     shellcheck"
@@ -52,6 +52,21 @@ RUN \
 RUN echo "ubuntu ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/ubuntu
 USER ubuntu
 ENV TERM=linux
+
+# -----------------------------------------------------------------------------
+# Node js
+
+ENV NVM_DIR "/home/ubuntu/.nvm"
+
+ARG NVM_VERSION="v0.39.3"
+ARG NODE_VERSION="v20.4.0"
+
+RUN \
+    curl -o- \
+    "https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh" \
+    | bash
+
+RUN /bin/bash -c "source ${NVM_DIR}/nvm.sh && nvm install ${NODE_VERSION} && nvm use --delete-prefix ${NODE_VERSION}"
 
 # -----------------------------------------------------------------------------
 # Startup
